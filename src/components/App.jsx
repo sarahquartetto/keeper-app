@@ -58,26 +58,28 @@ function App() {
   }, []);
 
   // Filter notes based on search query and selected labels
-  const filteredNotes = notes.filter(note => {
+  const filteredNotes = (notes || []).filter(note => {
     const matchesSearch = !searchQuery || 
       note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       note.content?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesLabels = selectedLabels.length === 0 || 
-      selectedLabels.some(label => note.labels?.includes(label));
+      (note.labels && Array.isArray(note.labels) && selectedLabels.some(label => note.labels.includes(label)));
     
     return matchesSearch && matchesLabels;
   });
 
   // Extract available labels from notes
   useEffect(() => {
-    const labels = new Set();
-    notes.forEach(note => {
-      if (note.labels) {
-        note.labels.forEach(label => labels.add(label));
-      }
-    });
-    setAvailableLabels(Array.from(labels));
+    if (notes && Array.isArray(notes)) {
+      const labels = new Set();
+      notes.forEach(note => {
+        if (note.labels && Array.isArray(note.labels)) {
+          note.labels.forEach(label => labels.add(label));
+        }
+      });
+      setAvailableLabels(Array.from(labels));
+    }
   }, [notes]);
 
   const fetchNotes = async (authToken) => {
