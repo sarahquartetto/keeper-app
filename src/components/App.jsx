@@ -27,6 +27,11 @@ function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
 
+  // Debug logging
+  console.log('App component loaded');
+  console.log('isAuthenticated:', isAuthenticated);
+  console.log('API_BASE_URL:', API_BASE_URL);
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
