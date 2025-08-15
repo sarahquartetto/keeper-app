@@ -4,17 +4,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(__dirname);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const { Pool } = pg;
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Keeper Notes',
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'Keeper Notes',
   password: process.env.DB_PASSWORD,
-  port: 5432,
+  port: process.env.DB_PORT || 5432,
+  // Add SSL for production databases
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 export default pool; 
