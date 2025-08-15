@@ -3,7 +3,14 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      // Disable Fast Refresh completely
+      fastRefresh: false,
+      // Disable React DevTools in production
+      jsxRuntime: 'automatic'
+    })
+  ],
   build: {
     target: 'es2015',
     outDir: 'dist',
@@ -17,6 +24,9 @@ export default defineConfig({
     }
   },
   define: {
-    __DEV__: false
-  }
+    __DEV__: false,
+    'process.env.NODE_ENV': '"production"'
+  },
+  // Force production mode
+  mode: 'production'
 })
