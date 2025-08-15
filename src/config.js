@@ -4,7 +4,7 @@ const config = {
     apiUrl: 'http://localhost:5000'
   },
   production: {
-    apiUrl: 'https://your-backend-url.onrender.com' // We'll update this after deploying backend
+    apiUrl: 'https://keeper-app-backend-6i1y.onrender.com'
   }
 };
 
