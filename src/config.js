@@ -8,7 +8,7 @@ const config = {
   }
 };
 
-// Use development config by default, can be overridden by environment variable
-const environment = import.meta.env.MODE || 'development';
+// Use production config by default for deployed versions
+const environment = import.meta.env.MODE || 'production';
 export const API_BASE_URL = config[environment].apiUrl;
 
