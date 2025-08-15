@@ -16,9 +16,8 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ error: 'username, email and password are required' });
   }
 
-  const client = await pool.connect();
   try {
-    const existing = await client.query(
+    const existing = await pool.query(
       'SELECT id FROM users WHERE username = $1 OR email = $2 LIMIT 1',
       [username, email]
     );
@@ -28,20 +27,23 @@ router.post('/register', async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const insert = await client.query(
+    const insert = await pool.query(
       'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email, created_at',
       [username, email, passwordHash]
     );
 
     const user = insert.rows[0];
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: 'Server misconfiguration: JWT secret is missing' });
+    }
+
     const token = generateToken(user.id);
 
     return res.status(201).json({ token, user });
   } catch (error) {
     console.error('Register error:', error);
     return res.status(500).json({ error: 'Internal server error' });
-  } finally {
-    client.release();
   }
 });
 
@@ -52,9 +54,8 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'email and password are required' });
   }
 
-  const client = await pool.connect();
   try {
-    const result = await client.query(
+    const result = await pool.query(
       'SELECT id, username, email, password_hash FROM users WHERE email = $1 LIMIT 1',
       [email]
     );
@@ -70,14 +71,16 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ error: 'Server misconfiguration: JWT secret is missing' });
+    }
+
     const token = generateToken(user.id);
 
     return res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'Internal server error' });
-  } finally {
-    client.release();
   }
 });
 
