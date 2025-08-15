@@ -20,12 +20,17 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import SearchBar from "./SearchBar";
+import LabelFilter from "./LabelFilter";
 
 function App() {
   const [notes, setNotes] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLabels, setSelectedLabels] = useState([]);
+  const [availableLabels, setAvailableLabels] = useState([]);
 
   // Debug logging
   console.log('App component loaded');
@@ -51,6 +56,29 @@ function App() {
       fetchNotes(savedToken);
     }
   }, []);
+
+  // Filter notes based on search query and selected labels
+  const filteredNotes = notes.filter(note => {
+    const matchesSearch = !searchQuery || 
+      note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesLabels = selectedLabels.length === 0 || 
+      selectedLabels.some(label => note.labels?.includes(label));
+    
+    return matchesSearch && matchesLabels;
+  });
+
+  // Extract available labels from notes
+  useEffect(() => {
+    const labels = new Set();
+    notes.forEach(note => {
+      if (note.labels) {
+        note.labels.forEach(label => labels.add(label));
+      }
+    });
+    setAvailableLabels(Array.from(labels));
+  }, [notes]);
 
   const fetchNotes = async (authToken) => {
     try {
@@ -171,6 +199,18 @@ function App() {
     <div>
       <Header onLogout={handleLogout} user={user} />
       <CreateArea onAdd={addNote} />
+      <SearchBar onSearch={setSearchQuery} />
+      <LabelFilter 
+        selectedLabels={selectedLabels}
+        onLabelToggle={(label) => {
+          setSelectedLabels(prev => 
+            prev.includes(label) 
+              ? prev.filter(l => l !== label)
+              : [...prev, label]
+          );
+        }}
+        availableLabels={availableLabels}
+      />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -181,7 +221,7 @@ function App() {
           strategy={verticalListSortingStrategy}
         >
           <div className="notes-container">
-            {notes.map((noteItem) => {
+            {filteredNotes.map((noteItem) => {
               return (
                 <Note
                   key={noteItem.id}
