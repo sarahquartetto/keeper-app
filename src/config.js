@@ -8,8 +8,8 @@ const config = {
   }
 };
 
-// Force production mode for online deployment
-const environment = 'production';
+// Use development mode for local database
+const environment = 'development';
 export const API_BASE_URL = config[environment].apiUrl;
 
 // Debug logging
