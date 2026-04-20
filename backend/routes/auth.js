@@ -16,8 +16,9 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ error: 'username, email and password are required' });
   }
 
-  const client = await pool.connect();
+  let client;
   try {
+    client = await pool.connect();
     const existing = await client.query(
       'SELECT id FROM users WHERE username = $1 OR email = $2 LIMIT 1',
       [username, email]
@@ -41,7 +42,7 @@ router.post('/register', async (req, res) => {
     console.error('Register error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   } finally {
-    client.release();
+    client?.release?.();
   }
 });
 
@@ -52,8 +53,9 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ error: 'email and password are required' });
   }
 
-  const client = await pool.connect();
+  let client;
   try {
+    client = await pool.connect();
     const result = await client.query(
       'SELECT id, username, email, password_hash FROM users WHERE email = $1 LIMIT 1',
       [email]
@@ -77,7 +79,7 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   } finally {
-    client.release();
+    client?.release?.();
   }
 });
 
