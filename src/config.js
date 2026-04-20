@@ -1,18 +1,7 @@
-// Configuration for different environments
-const config = {
-  development: {
-    apiUrl: 'http://localhost:5000'
-  },
-  production: {
-    apiUrl: 'https://keeper-app-backend-6i1y.onrender.com'
-  }
-};
+const DEFAULT_API_BASE_URL =
+  // Local dev (when running `npm run server`)
+  'http://localhost:5000'
 
-// Use development mode for local database
-const environment = 'development';
-export const API_BASE_URL = config[environment].apiUrl;
-
-// Debug logging
-console.log('Environment:', environment);
-console.log('API URL:', config[environment].apiUrl);
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL
 
