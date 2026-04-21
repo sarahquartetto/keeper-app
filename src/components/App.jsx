@@ -32,6 +32,22 @@ function App() {
   const [selectedLabels, setSelectedLabels] = useState([]);
   const [availableLabels, setAvailableLabels] = useState([]);
 
+  const getLabelColor = (label) => {
+    const palette = {
+      work: '#6b705c',
+      personal: '#cb997e',
+      important: '#c1121f',
+      ideas: '#3a86ff',
+      todo: '#2a9d8f',
+    };
+    return palette[label] || '#6b705c';
+  };
+
+  const getCustomLabelColor = (_label, index = 0) => {
+    const colors = ['#6b705c', '#cb997e', '#3a86ff', '#2a9d8f', '#9b5de5', '#f4a261'];
+    return colors[index % colors.length];
+  };
+
   // Debug logging
   console.log('App component loaded');
   console.log('isAuthenticated:', isAuthenticated);
@@ -200,17 +216,21 @@ function App() {
   return (
     <div>
       <Header onLogout={handleLogout} user={user} />
-      <CreateArea onAdd={addNote} />
+      <CreateArea
+        onAdd={addNote}
+        availableLabels={availableLabels}
+        getLabelColor={getLabelColor}
+        getCustomLabelColor={getCustomLabelColor}
+      />
       <SearchBar onSearch={setSearchQuery} />
       <LabelFilter 
+        notes={notes}
         selectedLabels={selectedLabels}
-        onLabelToggle={(label) => {
-          setSelectedLabels(prev => 
-            prev.includes(label) 
-              ? prev.filter(l => l !== label)
-              : [...prev, label]
-          );
-        }}
+        onLabelSelect={(label) => setSelectedLabels((prev) => [...prev, label])}
+        onLabelDeselect={(label) => setSelectedLabels((prev) => prev.filter((l) => l !== label))}
+        onClearAll={() => setSelectedLabels([])}
+        getLabelColor={getLabelColor}
+        getCustomLabelColor={getCustomLabelColor}
         availableLabels={availableLabels}
       />
       <DndContext
@@ -231,6 +251,10 @@ function App() {
                   title={noteItem.title}
                   content={noteItem.content}
                   images={noteItem.images || []}
+                  labels={noteItem.labels || []}
+                  availableLabels={availableLabels}
+                  getLabelColor={getLabelColor}
+                  getCustomLabelColor={getCustomLabelColor}
                   onDelete={deleteNote}
                   onUpdate={updateNote}
                 />

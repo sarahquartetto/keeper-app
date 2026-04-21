@@ -3,7 +3,15 @@ import { Chip, Box, TextField, Button, IconButton, Collapse } from "@mui/materia
 import AddIcon from "@mui/icons-material/Add";
 import LabelIcon from '@mui/icons-material/Label';
 
-function LabelFilter({ notes, selectedLabels, onLabelSelect, onLabelDeselect, onClearAll, getLabelColor, getCustomLabelColor }) {
+function LabelFilter({
+  notes = [],
+  selectedLabels = [],
+  onLabelSelect = () => {},
+  onLabelDeselect = () => {},
+  onClearAll = () => {},
+  getLabelColor = () => 'var(--accent)',
+  getCustomLabelColor = () => 'var(--primary)'
+}) {
   const [customLabel, setCustomLabel] = useState("");
   const [allLabels, setAllLabels] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
