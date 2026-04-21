@@ -2,13 +2,20 @@ import React, { useState } from "react";
 import { Box, IconButton, Collapse, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 
-function SearchBar({ onSearch, searchQuery, setSearchQuery }) {
+function SearchBar({ onSearch = () => {}, searchQuery = '', setSearchQuery = () => {} }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSearchChange = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
     onSearch(query);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    onSearch(searchQuery || '');
+    setIsOpen(false);
   };
 
   return (
@@ -64,6 +71,7 @@ function SearchBar({ onSearch, searchQuery, setSearchQuery }) {
               placeholder="Search notes..."
               value={searchQuery}
               onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   fontSize: "14px",

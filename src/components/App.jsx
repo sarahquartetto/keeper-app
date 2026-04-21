@@ -224,7 +224,11 @@ function App() {
         getLabelColor={getLabelColor}
         getCustomLabelColor={getCustomLabelColor}
       />
-      <SearchBar onSearch={setSearchQuery} />
+      <SearchBar
+        onSearch={setSearchQuery}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <LabelFilter 
         notes={notes}
         selectedLabels={selectedLabels}
