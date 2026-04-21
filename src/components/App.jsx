@@ -142,7 +142,8 @@ function App() {
         body: JSON.stringify({
           title: newNote.title,
           content: newNote.content,
-          images: newNote.images || []
+          images: newNote.images || [],
+          labels: newNote.labels || []
         })
       });
 
@@ -183,7 +184,8 @@ function App() {
         body: JSON.stringify({
           title: updates.title,
           content: updates.content,
-          images: updates.images || []
+          images: updates.images || [],
+          labels: updates.labels || []
         })
       });
 

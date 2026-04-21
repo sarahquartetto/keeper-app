@@ -7,6 +7,7 @@ function CreateArea(props) {
   const { onAdd, availableLabels = [], getLabelColor, getCustomLabelColor } = props;
   const [isExpanded, setExpanded] = useState(false);
   const formRef = useRef(null);
+  const [labelText, setLabelText] = useState("");
 
   const [note, setNote] = useState({
     title: "",
@@ -52,6 +53,7 @@ function CreateArea(props) {
       images: [],
       labels: []
     });
+    setLabelText("");
     setExpanded(false); // Collapse back to small state after submitting
     event.preventDefault();
   }
@@ -117,6 +119,46 @@ function CreateArea(props) {
             </label>
           </div>
         )}
+
+        {isExpanded && (
+          <div style={{ marginTop: 12 }}>
+            <div
+              style={{
+                fontSize: '14px',
+                color: 'var(--text)',
+                fontWeight: 500,
+                marginBottom: '8px',
+              }}
+            >
+              Labels (comma separated):
+            </div>
+            <input
+              type="text"
+              value={labelText}
+              onChange={(e) => {
+                const value = e.target.value;
+                setLabelText(value);
+                const labels = value
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter(Boolean);
+                setNote((prev) => ({ ...prev, labels }));
+              }}
+              placeholder="work, personal, todo..."
+              style={{
+                width: '100%',
+                border: '1px solid var(--border)',
+                padding: '8px 10px',
+                borderRadius: '8px',
+                outline: 'none',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                color: 'var(--text)',
+                background: 'rgba(255,255,255,0.6)',
+              }}
+            />
+          </div>
+        )}
         
         {/* Image Preview Section */}
         {isExpanded && note.images.length > 0 && (
@@ -177,7 +219,7 @@ function CreateArea(props) {
         )}
 
         {/* Labels Section */}
-        {isExpanded && (
+        {isExpanded && availableLabels.length > 0 && (
           <div style={{ marginTop: 12 }}>
             <div style={{ 
               fontSize: '14px', 
