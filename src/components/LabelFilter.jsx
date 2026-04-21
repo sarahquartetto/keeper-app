@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Chip, Box, TextField, Button, IconButton, Collapse } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import LabelIcon from '@mui/icons-material/Label';
@@ -15,6 +15,7 @@ function LabelFilter({
   const [customLabel, setCustomLabel] = useState("");
   const [allLabels, setAllLabels] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef(null);
 
   // Extract all unique labels from notes
   useEffect(() => {
@@ -49,8 +50,21 @@ function LabelFilter({
     }
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+    function onDocumentMouseDown(event) {
+      const root = rootRef.current;
+      if (!root) return;
+      if (root.contains(event.target)) return;
+      setIsOpen(false);
+    }
+    document.addEventListener('mousedown', onDocumentMouseDown);
+    return () => document.removeEventListener('mousedown', onDocumentMouseDown);
+  }, [isOpen]);
+
   return (
     <Box
+      ref={rootRef}
       sx={{
         position: "fixed",
         top: "100px", // Below the header

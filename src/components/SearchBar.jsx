@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, IconButton, Collapse, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 
 function SearchBar({ onSearch = () => {}, searchQuery = '', setSearchQuery = () => {} }) {
   const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef(null);
 
   const handleSearchChange = (event) => {
     const query = event.target.value;
@@ -18,8 +19,21 @@ function SearchBar({ onSearch = () => {}, searchQuery = '', setSearchQuery = () 
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+    function onDocumentMouseDown(event) {
+      const root = rootRef.current;
+      if (!root) return;
+      if (root.contains(event.target)) return;
+      setIsOpen(false);
+    }
+    document.addEventListener('mousedown', onDocumentMouseDown);
+    return () => document.removeEventListener('mousedown', onDocumentMouseDown);
+  }, [isOpen]);
+
   return (
     <Box
+      ref={rootRef}
       sx={{
         position: "fixed",
         top: "100px", // Below the header, same as LabelFilter
