@@ -67,8 +67,8 @@ function LabelFilter({
       ref={rootRef}
       sx={{
         position: "fixed",
-        top: "100px", // Below the header
-        left: "30px", // Slightly to the right of the previous 20px
+        top: { xs: "16px", sm: "100px" }, // On mobile: above the create note area
+        left: { xs: "16px", sm: "30px" },
         zIndex: 1000,
         textAlign: "center"
       }}
@@ -108,7 +108,7 @@ function LabelFilter({
               position: "absolute",
               left: "0",
               top: "100%",
-              minWidth: "300px" // Ensure the filter has a good width
+              minWidth: { xs: "240px", sm: "300px" } // Ensure the filter has a good width
             }}
           >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, marginBottom: 2, flexWrap: "wrap" }}>

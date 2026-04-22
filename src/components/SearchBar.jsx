@@ -36,8 +36,8 @@ function SearchBar({ onSearch = () => {}, searchQuery = '', setSearchQuery = () 
       ref={rootRef}
       sx={{
         position: "fixed",
-        top: "100px", // Below the header, same as LabelFilter
-        left: "90px", // To the right of the LabelFilter button
+        top: { xs: "16px", sm: "100px" }, // On mobile: above the create note area
+        left: { xs: "76px", sm: "90px" }, // Next to the label bubble
         zIndex: 1000,
         textAlign: "center"
       }}
@@ -73,7 +73,7 @@ function SearchBar({ onSearch = () => {}, searchQuery = '', setSearchQuery = () 
               borderRadius: "10px",
               border: "1px solid var(--border)",
               boxShadow: "0 2px 8px var(--shadow)",
-              width: "300px",
+              width: { xs: "260px", sm: "300px" },
               position: "absolute",
               left: "0",
               top: "100%"

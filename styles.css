@@ -266,3 +266,20 @@ form.create-note > button:hover {
     columns: 4;
   }
 } 
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  header {
+    padding: 14px 16px;
+  }
+
+  form.create-note {
+    width: 100%;
+    max-width: 100%;
+    margin: 86px auto 16px auto; /* push below fixed filter/search bubbles */
+  }
+
+  .notes-container {
+    padding: 12px;
+  }
+}
